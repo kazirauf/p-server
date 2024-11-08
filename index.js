@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -29,6 +29,154 @@ async function run() {
     const projectsCollection = database.collection("projects"); // Collection where skills will be stored
     const experienceCollection = database.collection("experience"); // Collection where skills will be stored
     const blogCollection = database.collection("blogs"); // Collection where skills will be stored
+
+    app.delete("/api/v1/skillsdelete/:id", async (req, res) => {
+      const skillsId = req.params.id;
+      console.log("Received delete request for ID:", skillsId); // Debugging log
+    
+      try {
+        const result = await skillsCollection.deleteOne({ _id: new ObjectId(skillsId) });
+        console.log("Delete operation result:", result); // Debugging log
+        if (result.deletedCount === 1) {
+          res.status(200).json({ success: true, message: "skills deleted successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "skills not found" });
+        }
+      } catch (error) {
+        console.error("Error deleting skills:", error); // Debugging log
+        res.status(500).json({ success: false, message: "Failed to delete skills", error: error.message });
+      }
+    });
+    app.delete("/api/v1/projectsdelete/:id", async (req, res) => {
+      const projectsId = req.params.id;
+      console.log("Received delete request for ID:", projectsId); // Debugging log
+    
+      try {
+        const result = await projectsCollection.deleteOne({ _id: new ObjectId(projectsId) });
+        console.log("Delete operation result:", result); // Debugging log
+        if (result.deletedCount === 1) {
+          res.status(200).json({ success: true, message: "projects deleted successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "projects not found" });
+        }
+      } catch (error) {
+        console.error("Error deleting projects:", error); // Debugging log
+        res.status(500).json({ success: false, message: "Failed to delete projects", error: error.message });
+      }
+    });
+    app.delete("/api/v1/experiencedelete/:id", async (req, res) => {
+      const experienceId = req.params.id;
+      console.log("Received delete request for ID:", experienceId); // Debugging log
+    
+      try {
+        const result = await experienceCollection.deleteOne({ _id: new ObjectId(experienceId) });
+        console.log("Delete operation result:", result); // Debugging log
+        if (result.deletedCount === 1) {
+          res.status(200).json({ success: true, message: "experience deleted successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "experience not found" });
+        }
+      } catch (error) {
+        console.error("Error deleting experience:", error); // Debugging log
+        res.status(500).json({ success: false, message: "Failed to delete experience", error: error.message });
+      }
+    });
+    app.delete("/api/v1/deleteblog/:id", async (req, res) => {
+      const blogId = req.params.id;
+      console.log("Received delete request for ID:", blogId); // Debugging log
+    
+      try {
+        const result = await blogCollection.deleteOne({ _id: new ObjectId(blogId) });
+        console.log("Delete operation result:", result); // Debugging log
+        if (result.deletedCount === 1) {
+          res.status(200).json({ success: true, message: "Blog deleted successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "Blog not found" });
+        }
+      } catch (error) {
+        console.error("Error deleting blog:", error); // Debugging log
+        res.status(500).json({ success: false, message: "Failed to delete blog", error: error.message });
+      }
+    });
+    
+
+    // PUT endpoint to update a blog by ID
+    app.put("/api/v1/skillsupdate/:id", async (req, res) => {
+      const skillsId = req.params.id; // Get blog ID from the request params
+      const skillsUpdatedData = req.body; // New data for updating the blog
+
+      try {
+        const result = await skillsCollection.updateOne(
+          { _id: new ObjectId(skillsId) },
+          { $set: skillsUpdatedData }
+        );
+
+        if (result.matchedCount === 1) {
+          res.status(200).json({ success: true, message: "skills updated successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "skills not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to update skills", error: error.message });
+      }
+    });
+    app.put("/api/v1/projectsupdate/:id", async (req, res) => {
+      const projectsId = req.params.id; // Get blog ID from the request params
+      const projectsUpdatedData = req.body; // New data for updating the blog
+
+      try {
+        const result = await projectsCollection.updateOne(
+          { _id: new ObjectId(projectsId) },
+          { $set: projectsUpdatedData }
+        );
+
+        if (result.matchedCount === 1) {
+          res.status(200).json({ success: true, message: "projects updated successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "projects not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to update projects", error: error.message });
+      }
+    });
+    app.put("/api/v1/experienceupdate/:id", async (req, res) => {
+      const experienceId = req.params.id; // Get blog ID from the request params
+      const experienceUpdatedData = req.body; // New data for updating the blog
+
+      try {
+        const result = await experienceCollection.updateOne(
+          { _id: new ObjectId(experienceId) },
+          { $set: experienceUpdatedData }
+        );
+
+        if (result.matchedCount === 1) {
+          res.status(200).json({ success: true, message: "experience updated successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "experience not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to update experience", error: error.message });
+      }
+    });
+    app.put("/api/v1/updateblog/:id", async (req, res) => {
+      const blogId = req.params.id; // Get blog ID from the request params
+      const updatedData = req.body; // New data for updating the blog
+
+      try {
+        const result = await blogCollection.updateOne(
+          { _id: new ObjectId(blogId) },
+          { $set: updatedData }
+        );
+
+        if (result.matchedCount === 1) {
+          res.status(200).json({ success: true, message: "Blog updated successfully!" });
+        } else {
+          res.status(404).json({ success: false, message: "Blog not found" });
+        }
+      } catch (error) {
+        res.status(500).json({ success: false, message: "Failed to update blog", error: error.message });
+      }
+    });
 
     // POST endpoint to create skills
     app.post("/api/v1/createskills", async (req, res) => {
@@ -123,6 +271,42 @@ async function run() {
         });
       }
     });
+
+    // GET endpoint to retrieve a blog post by its ID
+    app.get("/api/v1/getblogs/:id", async (req, res) => {
+      const blogId = req.params.id; // Retrieve the blog ID from the URL parameter
+    
+      try {
+        // Query the database for the blog post by its ID
+        const blog = await blogCollection.findOne({ _id: new ObjectId(blogId) });
+    
+        // If no blog is found, return a 404 error
+        if (!blog) {
+          return res.status(404).json({
+            success: false,
+            message: "Blog not found"
+          });
+        }
+    
+        // Return the detailed blog data
+        res.status(200).json({
+          success: true,
+          data: {
+            id: blog._id,
+            blogtitle: blog.blogtitle,
+            blogurl: blog.blogurl,
+            content: blog.content
+          }
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          message: "Failed to retrieve blog",
+          error: error.message
+        });
+      }
+    });
+    
     // GET endpoint to retrieve all skills
     app.get("/api/v1/getskills", async (req, res) => {
       try {
